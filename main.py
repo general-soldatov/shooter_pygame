@@ -1,35 +1,11 @@
 import pygame
 from random import randint
 
+from objects import Wall, Enemy, Star, Hero
+from constants import *
+
 pygame.init()
 
-# global variables
-win_width = 800
-win_height = 600
-win_cell = round(win_width / 100)
-
-STAR_COUNT = 5
-ENEMY_COUNT = 3
-
-left_bound = win_width / 40
-right_bound = win_width - left_bound
-shift = 0
-speed = 0
-x_start, y_start = 20, 10
-
-# using images
-img_file_back = 'static/background.jpg'
-img_file_hero = 'static/unit.png'
-img_file_enemy = 'static/enemy.png'
-FPS = 60
-GRAVITY = 0.1
-
-# colors
-C_WHITE = (255, 255, 255)
-C_DARK = (48, 48, 0)
-C_YELLOW = (255, 255, 87)
-C_GREEN = (32, 128, 32)
-C_RED = (255, 0, 0)
 
 class Game:
     def __init__(self, win_width, win_height, name="ARCADA"):
@@ -72,76 +48,6 @@ class Game:
         self.bombs.draw(self.window)
         self.stars.draw(self.window)
         self.bullets.draw(self.window)
-
-
-class Hero(pygame.sprite.Sprite):
-    """
-    Person Hero
-    """
-    def __init__(self, filename, x_speed=0, y_speed=0, x=left_bound, y=0, width=120, height=120):
-        super().__init__()
-        self.image = pygame.transform.scale(pygame.image.load(filename), (width, height)).convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.lives = 3
-        self.stars_collected = 0
-        self.enemies_killed = 0
-        self.reload_time = 0
-
-        self.x_speed = x_speed
-        self.y_speed = y_speed
-
-    def update(self):
-        self.rect.x += self.x_speed
-        self.rect.y += self.y_speed
-
-    def shoot(self):
-        bullet = Bullet(x=self.rect.centerx, y=self.rect.centery)
-        game.add_bullet(bullet)
-
-class Wall(pygame.sprite.Sprite):
-    def __init__(self, x=20, y=0, width=120, height=120, color=C_GREEN):
-        super().__init__()
-        self.image = pygame.Surface((width, height))
-        self.image.fill(color)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x=20, y=0, filename=img_file_enemy, width=120, height=120):
-        super().__init__()
-
-        self.image = pygame.transform.scale(pygame.image.load(filename), (width, height)).convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-    def update(self):
-        self.rect.x += randint(-10, 10)
-        self.rect.y += randint(-5, 5)
-
-class Star(pygame.sprite.Sprite):
-    def __init__(self, width=50, height=50):
-        super().__init__()
-        self.image = pygame.Surface((width, height))
-        self.image.fill(C_YELLOW)
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = randint(0, win_width - 20), randint(0, win_height - 20)
-
-class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, width=5, height=5):
-        super().__init__()
-        self.image = pygame.Surface((width, height))
-        self.image.fill(C_RED)
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = x, y
-
-    def update(self):
-        if self.rect.y < win_height:
-            self.rect.y += 5
-        self.remove()
 
 game = Game(win_width, win_height)
 game.start()
@@ -188,7 +94,7 @@ while game.run:
             elif event.key == pygame.K_DOWN:
                 robin.y_speed = 5
             elif event.key == pygame.K_SPACE:
-                robin.shoot()
+                robin.shoot(game)
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 robin.x_speed = 0
