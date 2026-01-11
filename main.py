@@ -8,7 +8,7 @@ pygame.init()
 
 
 class Game:
-    def __init__(self, win_width, win_height, name="ARCADA"):
+    def __init__(self, win_width, win_height, name="SHOOTER"):
         self.run = True
         self.name = name
         self.win_size = win_width, win_height
@@ -58,6 +58,9 @@ back = pygame.transform.scale(img, (win_width, win_height))
 # add hero to sprites
 robin = Hero(img_file_hero)
 game.all_sprites.add(robin)
+
+pygame.mixer.music.load('static/background_music.mp3')
+pygame.mixer.music.play(-1)
 
 # create barriers
 for barrier in [
